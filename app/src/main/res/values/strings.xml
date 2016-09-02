@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">MyWeather</string>
+    <string name="show_city_list_button">list</string>
+    <string name="show_city_name_textview">Delhi</string>
+    <string name="add_location_button">add</string>
+    <string name="menu_button">menu</string>
+    <string name="presentdate_textview">Sat, 30 July</string>
+    <string name="current_weather_textview">Cloudy</string>
+    <string name="current_temperature_textview">29</string>
+    <string name="maxtemp_textview">31</string>
+    <string name="mintemp_textview">26</string>
+    <string name="feels_like_textview">Feels Like</string>
+    <string name="sunrise_textview">Sunrise</string>
+    <string name="humidity_textview">Humidity</string>
+    <string name="sunset_textview">Sunset</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
