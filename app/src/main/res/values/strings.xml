@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MyWeather</string>
+    <string name="app_name">MyExplorer</string>
     <string name="show_city_list_button">list</string>
     <string name="show_city_name_textview">Delhi</string>
     <string name="add_location_button">add</string>
