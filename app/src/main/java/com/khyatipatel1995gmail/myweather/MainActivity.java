@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         explorerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d(TAG, "onItemClick: " + position);
                 File clickedFile = new File(files.get(position));
                 if (clickedFile.isDirectory()) {
                     File[] tempAllFiles = clickedFile.listFiles();
@@ -62,8 +63,8 @@ public class MainActivity extends AppCompatActivity {
                 } else {
 
                 }
-                Log.d(TAG, "on create:" + clickedFile);
-                Log.d(TAG, "onItemClick:" + files);
+                Log.d(TAG, "on create:" + clickedFile.getPath());
+//                Log.d(TAG, "onItemClick:" + files);
             }
         });
 
