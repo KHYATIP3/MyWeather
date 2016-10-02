@@ -1,74 +1,182 @@
 package com.khyatipatel1995gmail.myweather;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
-    public ListView explorerListView;
-    Button backButton;
-    List<String> files;
+    public ListView mStorageListView;
+    List<String> mFiles;
+    FileArrayAdapter mAdapter;
+
+    public File currentDir;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        explorerListView = (ListView) findViewById(R.id.storage_listview);
-        String baseDir = Environment.getExternalStorageDirectory().getAbsolutePath();
-        File currentDir = new File(baseDir);
-        File[] allFiles = currentDir.listFiles();
-        files = new ArrayList<String>();
-        for (File file : allFiles) {
-            files.add(file.getPath());
-        }
-        Collections.sort(files);
-        final FileArrayAdapter filesAdapter = new FileArrayAdapter(getApplicationContext(), R.layout.listview_item_row, files);
-        View header = (View) getLayoutInflater().inflate(R.layout.listview_header, null);
-        backButton=(Button)header.findViewById(R.id.back_button);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        mStorageListView = (ListView) findViewById(R.id.storage_listview);
+        currentDir = Environment.getExternalStorageDirectory();
+        mFiles = getPathListOfFiles(currentDir);
 
+        String arr[] = mFiles.toArray(new String[mFiles.size()]);
+        try {
+            mqSort(arr,0,arr.length - 1);
+            for (int i = 0; i < arr.length; i++) {
+                Log.i(TAG, "onCreate: " + arr[i]);
             }
-        });
-        explorerListView.addHeaderView(header);
-        explorerListView.setAdapter(filesAdapter);
-        explorerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+//        try {
+//            long time = System.currentTimeMillis();
+//            initQuickSort(mFiles);
+//            Log.d(TAG, "onCreate: " + mFiles.size());
+//            Log.e(TAG, "onCreate: " + String.valueOf(System.currentTimeMillis() - time));
+////            insertionSort(mFiles);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+        refreshAdapter();
+
+        mStorageListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d(TAG, "onItemClick: " + position);
-                File clickedFile = new File(files.get(position));
-                if (clickedFile.isDirectory()) {
-                    File[] tempAllFiles = clickedFile.listFiles();
-                    files.clear();
-                    for (File file : tempAllFiles) {
-                        files.add(file.getPath());
-                    }
-                    FileArrayAdapter filesAdapter = new FileArrayAdapter(getApplicationContext(), R.layout.listview_item_row, files);
-                    explorerListView.setAdapter(filesAdapter);
-
-                } else {
-
-                }
-                Log.d(TAG, "on create:" + clickedFile.getPath());
-//                Log.d(TAG, "onItemClick:" + files);
+                currentDir = new File(mFiles.get(position));
+                mFiles = getPathListOfFiles(currentDir);
+                refreshAdapter();
             }
         });
+    }
 
+    private void refreshAdapter() {
+        mAdapter = new FileArrayAdapter(getApplicationContext(), R.layout.listview_item_row, mFiles);
+        mStorageListView.setAdapter(mAdapter);
+    }
 
+    private List<String> getPathListOfFiles(File file) {
+        File[] files = file.listFiles();
+        List<String> pathList = new ArrayList<>();
+        for (int i = 0; i < files.length; i++) {
+            pathList.add(files[i].getAbsolutePath());
+        }
+        return pathList;
+    }
+
+    public void backButtonPressed(View view) {
+        if (isRoot(currentDir)) {
+            Toast.makeText(getApplicationContext(), "Already in root Dir", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        currentDir = currentDir.getParentFile();
+        mFiles = getPathListOfFiles(currentDir);
+        refreshAdapter();
+    }
+
+    private boolean isRoot(File file) {
+        return file.getAbsolutePath().equals(Environment.getExternalStorageDirectory().getAbsolutePath());
+    }
+
+    public static List<String> insertionSort(List<String> inputList) throws InterruptedException {
+        int i, j;
+        String key;
+        String[] inputArray = inputList.toArray(new String[inputList.size()]);
+        for (j = 1; j < inputArray.length; j++) {
+            key = inputArray[j];
+            i = j - 1;
+            while (i >= 0) {
+                if (key.compareTo(inputArray[i]) > 0) {//here too
+                    break;
+                }
+                inputArray[i + 1] = inputArray[i];
+                i--;
+                Thread.sleep(1);
+            }
+            inputArray[i + 1] = key;
+        }
+
+        return new ArrayList<String>(Arrays.asList(inputArray));
+    }
+
+    public static List<String> initQuickSort(List<String> inputList) throws InterruptedException {
+        String[] inputArray = inputList.toArray(new String[inputList.size()]);
+        inputArray = quickSort(inputArray, 0, inputArray.length - 1);
+        for (int i = 0; i < inputArray.length; i++) {
+            Log.d(TAG, "initQuickSort: " + inputArray[i]);
+        }
+        return new ArrayList<>(Arrays.asList(inputArray));
+    }
+
+    private static String[] quickSort(String[] strArr, int p, int r) throws InterruptedException {
+        if (p < r) {
+            int q = partition(strArr, p, r);
+            quickSort(strArr, p, q);
+            quickSort(strArr, q + 1, r);
+        }
+
+        return strArr;
+    }
+
+    private static int partition(String[] strArr, int p, int r) throws InterruptedException {
+
+        String x = strArr[p];
+        int i = p - 1;
+        int j = r + 1;
+
+        while (true) {
+            i++;
+            while (i < r && strArr[i].compareTo(x) < 0) {
+                i++;
+            }
+            j--;
+            while (j > p && strArr[j].compareTo(x) > 0) {
+                j--;
+            }
+
+            if (i < j) {
+                swap(strArr, i, j);
+            } else {
+                return j;
+            }
+        }
+    }
+
+    private static void swap(String[] strArr, int i, int j) {
+        String temp = strArr[i];
+        strArr[i] = strArr[j];
+        strArr[j] = temp;
+    }
+
+    public void showGraph(View view) {
+        startActivity(new Intent(this, GraphActivity.class));
+    }
+
+    private void mqSort(String arr[],int p , int r) throws InterruptedException {
+        if(p < r){
+            if (r - p < 10){
+//                GraphActivity.mergeSort(arr);
+                Arrays.sort(arr,p,r+1);
+            }else {
+                int q = FileArrayAdapter.partition(arr,p,r);
+                mqSort(arr,p,q-1);
+                mqSort(arr,q+1,r);
+            }
+        }
     }
 
 }
