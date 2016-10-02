@@ -33,25 +33,6 @@ public class MainActivity extends AppCompatActivity {
         currentDir = Environment.getExternalStorageDirectory();
         mFiles = getPathListOfFiles(currentDir);
 
-        String arr[] = mFiles.toArray(new String[mFiles.size()]);
-        try {
-            mqSort(arr,0,arr.length - 1);
-            for (int i = 0; i < arr.length; i++) {
-                Log.i(TAG, "onCreate: " + arr[i]);
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-//        try {
-//            long time = System.currentTimeMillis();
-//            initQuickSort(mFiles);
-//            Log.d(TAG, "onCreate: " + mFiles.size());
-//            Log.e(TAG, "onCreate: " + String.valueOf(System.currentTimeMillis() - time));
-////            insertionSort(mFiles);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
         refreshAdapter();
 
         mStorageListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -65,6 +46,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void refreshAdapter() {
+        String arr[] = mFiles.toArray(new String[mFiles.size()]);
+        try {
+            mqSort(arr,0,arr.length-1);
+            mFiles = new ArrayList<>(Arrays.asList(arr));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         mAdapter = new FileArrayAdapter(getApplicationContext(), R.layout.listview_item_row, mFiles);
         mStorageListView.setAdapter(mAdapter);
     }
