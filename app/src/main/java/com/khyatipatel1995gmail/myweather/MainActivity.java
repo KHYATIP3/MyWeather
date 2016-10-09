@@ -48,7 +48,15 @@ public class MainActivity extends AppCompatActivity {
     private void refreshAdapter() {
         String arr[] = mFiles.toArray(new String[mFiles.size()]);
         try {
+            long currTime = System.nanoTime();
             mqSort(arr,0,arr.length-1);
+
+            long timeTaken = System.nanoTime() - currTime;
+
+            timeTaken = timeTaken/1000;
+            Toast.makeText(getApplicationContext(),"Took " + timeTaken + " micro seconds\n" + "To sort " + arr.length + " items" ,Toast.LENGTH_SHORT).show();
+
+
             mFiles = new ArrayList<>(Arrays.asList(arr));
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -94,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
                 }
                 inputArray[i + 1] = inputArray[i];
                 i--;
-                Thread.sleep(1);
             }
             inputArray[i + 1] = key;
         }
@@ -105,9 +112,6 @@ public class MainActivity extends AppCompatActivity {
     public static List<String> initQuickSort(List<String> inputList) throws InterruptedException {
         String[] inputArray = inputList.toArray(new String[inputList.size()]);
         inputArray = quickSort(inputArray, 0, inputArray.length - 1);
-        for (int i = 0; i < inputArray.length; i++) {
-            Log.d(TAG, "initQuickSort: " + inputArray[i]);
-        }
         return new ArrayList<>(Arrays.asList(inputArray));
     }
 
@@ -155,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(this, GraphActivity.class));
     }
 
-    private void mqSort(String arr[],int p , int r) throws InterruptedException {
+    public static void mqSort(String arr[],int p , int r) throws InterruptedException {
         if(p < r){
             if (r - p < 10){
 //                GraphActivity.mergeSort(arr);
