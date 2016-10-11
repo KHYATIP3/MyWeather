@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.khyatipatel1995gmail.myweather.OverlayActivity">
+
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:clickable="true"
+        android:onClick="startMain"
+        android:orientation="horizontal"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="3dp"
+        android:layout_width="match_parent"
+        android:layout_height="70dp">
+
+    <ImageView
+        android:padding="5dp"
+        android:src="@drawable/folder"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:id="@+id/device_storage_image"/>
+    <TextView
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="15dp"
+        android:textSize="17sp"
+        android:textColor="#363636"
+        android:id="@+id/file_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Internal Storage"/>
+    </LinearLayout>
+
+</RelativeLayout>
